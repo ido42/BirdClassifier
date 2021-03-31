@@ -8,7 +8,7 @@ class ANN():
         self.num_layer = num_layer
         self.layers = []
         for layer in range(num_layer):
-            self.neurons.append(Layer(self.node_count,self.layer_no))
+            self.neurons.append(Layer(self.node_count, self.layer_no))
 
     def add_layer(self, num_new_layer):
         for layer in range(num_new_layer):
@@ -20,9 +20,13 @@ class ANN():
             self.layers = self.layers.append(Layer(self.inputs, self.weights))
         self.num_layer -= num_remove_layer
 
-    def forward_pass(self):
-        pass
-    def back_prop(self):
+    def forward_pass(self, flat_image):  # takes flat image calculates the output once, using the current weights
+        for layer in self.layers:
+            for neuron in layer.neurons:
+                neuron.output
+
+
+    def back_prop(self, result):
         pass
     def train(self, flat_image):  # takes one flatten image, updates weights using forward_pass and back_prop
         pass

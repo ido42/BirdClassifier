@@ -12,3 +12,9 @@ class Neuron():
 
     def update_weights(self, new_weights):
         self.weights = new_weights
+
+class InputNeuron(Neuron):
+    def __init__(self, flatten_input):  #input is of size one and outputs directly
+        self.inputs = flatten_input
+        self.output = self.inputs
+
