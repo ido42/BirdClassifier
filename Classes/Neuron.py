@@ -7,14 +7,10 @@ class Neuron():
         self.inputs = inputs
         self.in_vector = np.append([1], self.inputs)  # add bias term
         self.weights = np.transpose(np.random.rand(inputs.size+1,1))
-        self.output = np.matmul(self.inputs, self.weights)
-        self.sigm_output = 1/(1+np.exp(self.output))
+        #self.output = np.matmul(self.inputs, self.weights)
+        #self.sigm_output = 1/(1+np.exp(self.output))
 
     def update_weights(self, new_weights):
         self.weights = new_weights
 
-class InputNeuron(Neuron):
-    def __init__(self, flatten_input):  #input is of size one and outputs directly
-        self.inputs = flatten_input
-        self.output = self.inputs
 
