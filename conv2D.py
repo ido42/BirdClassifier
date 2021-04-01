@@ -4,20 +4,24 @@ from matplotlib import pyplot as plt
 
 class conv2D:
 
-    def __init__(self, image, kernelNum, kernelSize, stride = 1):
+    def __init__(self, input, kernelNum, kernelSize, stride = 1)
+        self.input = input
+        self.kernelNum = kernelNum
+        self.kernelSize = kernelSize
+        self.stride = stride
         self.kernelMatrix = np.random.rand(kernelSize,kernelSize,kernelNum)
-        self.imageSize = image.shape()[0]
-        self.convSize = (self.imageSize - kernelSize)//(stride-1) + 1
+        self.inputSize = input.shape()[0]
+        self.convSize = (self.inputSize - kernelSize)//(stride-1) + 1
         self.outputSize = (self.convSize,self.convSize,kernelNum)
 
-    def convolve(self,image,kernelNum,kernelSize,stride):
+    def convolve(self):
         """Convolve RGB image with multiple kernels and sum for feature map"""
-        convOut = np.zeros((self.outputSize,self.outputSize,kernelNum))
+        convOut = np.empty((self.outputSize,self.outputSize,kernelNum)) # 3d array to store conv2d outputs
         for kernel_i in range(kernelNum): # goes through each 2d kernel
-            temp = np.zeros((self.convSize,self.convSize))
-            for C in range(3):  # goes through each channel
-                for i in range(0,self.imageSize - np.ceil((kernelSize-1)/2),stride): #start top-left move until kernel hits edge
-                    for j in range(0,self.imageSize - np.ceil((kernelSize-1)/2),stride):
-                        temp += image[i:i+kernelSize,j:j+kernelSize,C]*self.kernelMatrix[:,:,kernel_i]
+            temp = np.zeros((self.convSize,self.convSize)) # to sum channels into one
+            for C in range(input.shape()[2]):
+                for i in range(0,self.inputSize - np.ceil((kernelSize-1)/2),stride): #start top-left move until kernel hits edge
+                    for j in range(0,self.inputSize - np.ceil((kernelSize-1)/2),stride):
+                        temp += input[i:i+kernelSize,j:j+kernelSize,C]*self.kernelMatrix[:,:,kernel_i]
             convOut[:,:,kernel_i] = temp
-        return convOut
+        self.convOut = np.maximum(convOut,np.zeros_like(convOut)) # apply ReLU before output
