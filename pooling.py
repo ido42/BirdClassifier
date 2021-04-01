@@ -13,7 +13,7 @@ class poolingLayer:
         for i in range(0,self.matrix.shape()[0],self.cellSize):
             for j in range(0,self.matrix.shape()[0],self.cellSize):
                 if self.ptype == 'max':
-                    temp[i/self.cellSize,j/self.cellSize] = np.max(matrix[i:i+self.cellSize, j:j+self.cellSize])
+                    temp[i/self.cellSize,j/self.cellSize] = np.max(self.matrix[i:i+self.cellSize, j:j+self.cellSize])
                 if self.ptype == 'mean':
-                    temp[i/self.cellSize,j/self.cellSize] = np.mean(matrix[i:i+self.cellSize, j:j+self.cellSize])
+                    temp[i/self.cellSize,j/self.cellSize] = np.mean(self.matrix[i:i+self.cellSize, j:j+self.cellSize])
         self.pooled = temp
