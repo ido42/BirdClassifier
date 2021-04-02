@@ -1,5 +1,5 @@
 from Classes.Layer import*
-
+from scipy.signal import convolve2d
 
 class ANN():
     def __init__(self, num_layer, learning_rate, layers_neurons):  # layers_neurons is a list
@@ -35,6 +35,12 @@ class ANN():
             self.layers[l].grad_vector(grad)
             self.layers[l].loss_derivative(der_loss)
             self.layers[l].weight_matrix_update(self.l_rate)
+
+    def conv_error(self):
+        error = self.layers[0].grad_vect
+        return error
+
+
     def weight_decay(self):
         pass
 
