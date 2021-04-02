@@ -1,27 +1,39 @@
 import os
 import numpy as np
 import cv2
-
+import random
 ProjectFolder = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 directory_name = os.path.dirname
 imgFolder = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "Images"))
 imgTrain = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "Images", "Train"))
+imgTrainBO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "Images", "train","BARN OWL"))
+imgTrainF = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "Images", "train","FLAMINGO"))
+
 
 
 birdList = os.listdir(os.path.join(os.path.abspath(os.getcwd()), "Images", "Train"))
-birdDict = {"FLAMINGO":os.listdir(os.path.join(os.path.abspath(os.getcwd()), "Images", "Train", "FLAMINGO")),
-            "BARN OWL":os.listdir(os.path.join(os.path.abspath(os.getcwd()), "Images", "Train", "BARN OWL"))}
+birdDict = {"FLAMINGO": os.listdir(os.path.join(os.path.abspath(os.getcwd()), "Images", "Train", "FLAMINGO")),
+            "BARN OWL": os.listdir(os.path.join(os.path.abspath(os.getcwd()), "Images", "Train", "BARN OWL"))}
+birdsEncoded={"FLAMINGO": [0, 1], "BARN OWL": [1, 0]}
 imageNum = 0
 for bird in birdList:
     imageNum += len(birdDict[bird])
-
-np.random.Generator.shuffle(birdList)
+random.shuffle(birdList)
+train_birds = []
+train_species = []
+valid_birds = []
+valid_species = []
+all_birds = []
+all_species =[]
 for i in range(imageNum):
-    if i > imageNum/5:
-        randBird = np.random.Generator.choice(birdList)
-        randImg = np.random.Generator.choice(birdDict[randBird])
-        trainSet
+    randBird = random.choice(birdList)
+    randImg = random.choice(birdDict[randBird])
+    if i > 4*imageNum // 5:
+        train_birds.append(randImg)
+        train_species.append(birdsEncoded[randBird])
+
     else:
-        testSet
-
-
+        valid_species.append(birdsEncoded[randBird])
+        valid_birds.append(randImg)
+    all_birds.append(randImg)
+    all_species.append(randBird)

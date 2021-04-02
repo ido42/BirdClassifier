@@ -1,13 +1,15 @@
 import cv2
 import numpy as np
+from conv2D import *
+from pooling import*
+from Train import *
 from image_load import *
-#im1 = imgTrainBarnOwl+"/001.jpg"
-#img = cv2.imread(im1, 0)
-#print(type(img))
-#while True:
- #   cv2.imshow("m", img)
-  #  key = cv2.waitKey(1)
-   # if key == ord('q'):
-    #    break
-#for i in imgTrainBarnOwl:
-#img = cv2.imread(i,)
+
+Trainer = Train()
+
+for bird in range(len(train_species)):
+    if train_species[bird] == [0, 1]:
+        img = cv2.imread(imgTrainF+"\\"+train_birds[bird])
+    else:
+        img = cv2.imread(imgTrainBO+"\\"+train_birds[bird])
+    Trainer.train_with_one_img(img, train_species[bird] )
