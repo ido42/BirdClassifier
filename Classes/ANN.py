@@ -15,27 +15,29 @@ class ANN():
         for i in range(1, len(self.layers)):
             out = self.layers[i-1].output_vector
             #sigm_out=1/(1+np.exp(out))  #sigmoid activation
-            softmax_out = np.exp(out)/sum(np.exp(out))
-            self.layers[i].take_input(softmax_out)
+            relu_out = max(0,out)
+            #softmax_out = np.exp(out)/sum(np.exp(out))
+            self.layers[i].take_input(relu_out)
             self.layers[i].layer_output()
 
     def back_prop(self, result):  # result is in the form of a vector which is the same size with output
         #cross-entropy cost function
-        loss=result-self.layers[-1].output_vector
-        inp=np.matmul(np.transpose(self.layers[-1].input_vector),loss)
-        self.layers[-1].weight_matrix_update(inp,self.l_rate)
-        for layer in range(len(self.layers)):
-            for neuron in range(self.layers[layer].begin_neuron_count):
-            loss =
-       # for i in range(len(self.layers)):
-        #    for j in range(len(self.layers.output_vector)):
-         #       sum_exp = sum(np.exp())
-          #  dlast= (result/self.layers[-1].output_vector)*()
+        softmax_out = np.exp(self.layers[-1].output_vector) / sum(np.exp(self.layers[-1].output_vector))
+        grad_last = (softmax_out-result)
+        der_loss = np.matmul(np.transpose(grad_last), self.layers[-2].output_vector)
+        self.layers[-1].grad_vector(np.transpose(grad_last))
+        self.layers[-1].loss_derivative(der_loss)
+        self.layers[-1].weight_matrix_update(self.l_rate)
 
-        return error
-
-    def weight_decay(self,):
+        for l in range(0, len(self.layers)-1, -1):
+            grad = np.transpose(np.heaviside(self.layers[l].input_vector, 1)) * np.matmul(self.layers[l].weight_matrix, self.layers[l+1].grad_vect)
+            der_loss = np.matmul(np.transpose(grad), self.layers[l-1].output_vector)
+            self.layers[l].grad_vector(grad)
+            self.layers[l].loss_derivative(der_loss)
+            self.layers[l].weight_matrix_update(self.l_rate)
+    def weight_decay(self):
         pass
+
 
 
 

@@ -2,10 +2,11 @@ import cv2
 import numpy as np
 from conv2D import *
 from pooling import*
+from matplotlib import pyplot as plt
 from Train import *
 from image_load import *
 
-Trainer = Train()
+Trainer = Train(3, 5, 25, 5, 0.1, [5,5,5,2], 1, 'max')
 
 for bird in range(len(train_species)):
     if train_species[bird] == [0, 1]:
