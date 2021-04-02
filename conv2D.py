@@ -2,6 +2,7 @@ import numpy as np
 from scipy.signal import convolve2d
 from matplotlib import pyplot as plt
 import math
+
 class conv2D:
 # input is now an attribiute of the function, so that the conv layer can be used with multiple images in train class
     def __init__(self,  kernelNum, kernelSize, stride = 1):
@@ -18,6 +19,7 @@ class conv2D:
 
     def convolve(self,input):
         """Convolve RGB image with multiple kernels and sum for feature map"""
+        self.input = input
         inputSize = input.shape()[0]
         convSize = (inputSize - self.kernelSize) // (self.stride - 1) + 1
         self.outputSize = (convSize, convSize, self.kernelNum)
@@ -31,13 +33,12 @@ class conv2D:
             convOut[:,:,kernel_i] = temp
         self.convOut = np.maximum(convOut + self.bias, np.zeros_like(convOut))  # apply ReLU before output
 
-    def conv_backwards(self, loss_fc, positions):  # uses the loss of the first fully conected layer, to calculate its last layer
-        mat_size = int(math.sqrt(np.size(loss_fc)))
-        loss_fc=np.reshape(loss_fc, (mat_size, mat_size))
-        self.kernelMatrix[:,:,-1]
+    def getLoss(self, loss):
+        for k in range()
+        self.loss = convolve2d(np.rot90(np.rot90(self.kernelMatrix[:,:,k],)),loss)
+        return
 
+    def updateW(self):
 
-
-    def updateKernel(self):
         pass
 
