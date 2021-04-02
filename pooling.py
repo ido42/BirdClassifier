@@ -3,6 +3,7 @@ import numpy as np
 class poolingLayer:
 
     def __init__(self, matrix, outputSize, ptype = 'max'):
+        self.err = 0
         self.matrix = matrix
         self.outputSize = outputSize
         self.ptype = ptype
@@ -17,3 +18,5 @@ class poolingLayer:
                 if self.ptype == 'mean':
                     temp[i/self.cellSize,j/self.cellSize] = np.mean(self.matrix[i:i+self.cellSize, j:j+self.cellSize])
         self.pooled = temp
+
+    def getErr(self):

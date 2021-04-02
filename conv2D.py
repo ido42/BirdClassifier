@@ -6,9 +6,11 @@ class conv2D:
 
     def __init__(self, input, kernelNum, kernelSize, stride = 1):
         self.input = input
+        self.err = np.array([])
         self.kernelNum = kernelNum
         self.kernelSize = kernelSize
         self.stride = stride
+        self.bias = np.random.normal()
         self.kernelMatrix = np.random.rand(kernelSize,kernelSize,kernelNum)
         self.inputSize = input.shape()[0]
         self.convSize = (self.inputSize - kernelSize)//(stride-1) + 1
@@ -24,4 +26,7 @@ class conv2D:
                     for j in range(0,self.inputSize - np.ceil((self.kernelSize-1)/2),self.stride):
                         temp += input[i:i+self.kernelSize,j:j+self.kernelSize,C]*self.kernelMatrix[:,:,kernel_i]
             convOut[:,:,kernel_i] = temp
-        self.convOut = np.maximum(convOut,np.zeros_like(convOut)) # apply ReLU before output
+        self.convOut = np.maximum(convOut + self.bias,np.zeros_like(convOut)) # apply ReLU before output
+
+    def updateKernel(self):
+
