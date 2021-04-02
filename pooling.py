@@ -32,5 +32,10 @@ class poolingLayer:
                     temp[i/self.cellSize,j/self.cellSize] = np.mean(matrix[i:i+self.cellSize, j:j+self.cellSize])
         self.pooled = temp
 
-    def getErr(self):
-        pass
+    def getLoss(self, loss):
+        lossMatSize = 2*np.sqrt(len(loss[0]))
+        lossMatrix = np.reshape(loss,self.matrix.shape())
+        self.loss = np.zeros_like(lossMatrix)
+        for pos in self.positions:
+            self.loss[pos] = lossMatrix[pos]
+        return self.loss
