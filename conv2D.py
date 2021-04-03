@@ -15,31 +15,26 @@ class conv2D:
         self.kernelMatrix = np.random.rand(kernelSize,kernelSize,kernelNum)
         #self.inputSize = input.shape()[0]
         #self.convSize = (self.inputSize - kernelSize)//(stride-1) + 1
-        self.outputSize = None # (self.convSize,self.convSize,kernelNum)
+        #self.input = None
+        self.outputSize = 0  # (self.convSize,self.convSize,kernelNum)
 
 
-    def convolve(self,input):
+    def convolve(self, input_img):
         """Convolve RGB image with multiple kernels and sum for feature map"""
-        self.input = input
-        inputSize = input.shape()[0]
-        convSize = (inputSize - self.kernelSize) // (self.stride - 1) + 1
+        #self.input = input_img
+        inputSize = input_img.shape[0]#len(input_img[0][0])
+        convSize = (inputSize - self.kernelSize) // (self.stride) + 1
         self.outputSize = (convSize, convSize, self.kernelNum)
-        convOut = np.empty((self.outputSize,self.outputSize,self.kernelNum)) # 3d array to store conv2d outputs
-        for kernel_i in range(self.kernelNum): # goes through each 2d kernel
-            temp = np.zeros((convSize,convSize)) # to sum channels into one
-            for C in range(input.shape()[2]):
-                for i in range(0,inputSize - np.ceil((self.kernelSize-1)/2),self.stride): #start top-left move until kernel hits edge
-                    for j in range(0,inputSize - np.ceil((self.kernelSize-1)/2),self.stride):
-                        temp += input[i:i+self.kernelSize,j:j+self.kernelSize,C]*self.kernelMatrix[:,:,kernel_i]
-            convOut[:,:,kernel_i] = temp
-        self.convOut = np.maximum(convOut + self.bias, np.zeros_like(convOut))  # apply ReLU before output
+        convOut = np.empty(self.outputSize)  # 3d array to store conv2d outputs
+        for kernel_i in np.arange(self.kernelNum, dtype="int"):
+            temp = np.zeros((convSize,convSize))
+            for C in np.arange(input_img.shape[2], dtype="int"):
+                for i in np.arange(0, inputSize - np.ceil((self.kernelSize - 1) / 2), self.stride, dtype="int"):  # start top-left move until kernel hits edge
 
-   ''' def getLoss(self, loss):
-        for k in range()
-        self.loss = convolve2d(np.rot90(np.rot90(self.kernelMatrix[:,:,k],)),loss)
-        return
+                    for j in np.arange(0, inputSize - np.ceil((self.kernelSize - 1) / 2), self.stride, dtype="int"):
+                        temp[i:i + self.kernelSize, j:j + self.kernelSize]  += input_img[i:i + self.kernelSize, j:j + self.kernelSize, C]* self.kernelMatrix[:, :, kernel_i]
 
-    def updateW(self):
 
-        pass'''
+                convOut[:, :, kernel_i] = temp
+                self.convOut = np.maximum(convOut + self.bias, np.zeros_like(convOut))  # apply ReLU before output
 
