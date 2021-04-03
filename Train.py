@@ -1,5 +1,6 @@
 from conv2D import *
 from pooling import *
+from Classes.ANN import *
 class Train():
     def __init(self, convKernelNum, convKernelSize, poolOutputSize,
                ann_num_layer, ann_learning_rate, ann_layers_neurons, conv_stride = 1, pool_ptype = 'max'):
@@ -24,6 +25,6 @@ class Train():
             fully_connected = ANN(self.ann_num_layer, self.ann_learning_rate, self.ann_layers_neurons)
             fully_connected.forward_pass(flatten)
             self.prediction = fully_connected.layers[-1].output_vector
-            error = fully_connected.back_prop(input_label)
-            self.conv.conv_backwards(error, pooled.positions)
+            fully_connected.back_prop(input_label)
+            #self.conv.conv_backwards(error, pooled.positions)
 

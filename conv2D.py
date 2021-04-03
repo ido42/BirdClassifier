@@ -17,6 +17,7 @@ class conv2D:
         #self.convSize = (self.inputSize - kernelSize)//(stride-1) + 1
         self.outputSize = None # (self.convSize,self.convSize,kernelNum)
 
+
     def convolve(self,input):
         """Convolve RGB image with multiple kernels and sum for feature map"""
         self.input = input
@@ -33,12 +34,12 @@ class conv2D:
             convOut[:,:,kernel_i] = temp
         self.convOut = np.maximum(convOut + self.bias, np.zeros_like(convOut))  # apply ReLU before output
 
-    def getLoss(self, loss):
+   ''' def getLoss(self, loss):
         for k in range()
         self.loss = convolve2d(np.rot90(np.rot90(self.kernelMatrix[:,:,k],)),loss)
         return
 
     def updateW(self):
 
-        pass
+        pass'''
 
