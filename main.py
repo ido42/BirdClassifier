@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from conv2D import *
-from pooling import*
+from pooling import *
 from matplotlib import pyplot as plt
 from Classes.ANN import *
 from Train import *

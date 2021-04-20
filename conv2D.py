@@ -23,7 +23,7 @@ class conv2D:
         """Convolve RGB image with multiple kernels and sum for feature map"""
         #self.input = input_img
         inputSize = input_img.shape[0]#len(input_img[0][0])
-        convSize = (inputSize - self.kernelSize) // (self.stride) + 1
+        convSize = (inputSize - self.kernelSize) // self.stride + 1
         self.outputSize = (convSize, convSize, self.kernelNum)
         convOut = np.empty(self.outputSize)  # 3d array to store conv2d outputs
         for kernel_i in np.arange(self.kernelNum, dtype="int"):
