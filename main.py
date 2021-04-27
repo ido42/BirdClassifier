@@ -4,6 +4,7 @@ from conv2D import *
 from pooling import *
 from matplotlib import pyplot as plt
 from Classes.ANN import *
+
 from Train import *
 from image_load import *
 
