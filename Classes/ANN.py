@@ -25,10 +25,13 @@ class ANN():
         self.softmax_out=softmax_out
     def back_prop(self, result):  # result is in the form of a vector which is the same size with output
         #cross-entropy cost function
-
-        grad_last = (self.softmax_out-result)
-        der_loss = np.matmul(np.transpose(grad_last), self.layers[-2].output_vector)
-        self.layers[-1].grad_vector(np.transpose(grad_last))
+        cross_entropy = -np.sum(result * np.log(self.softmax_out))
+        der_soft = self.softmax_out * (np.sum(self.softmax_out) - self.softmax_out) / np.sum(self.softmax_out) ** 2
+        delta = cross_entropy * der_soft
+        self.layers[-1].grad_vector(np.transpose(delta))
+        out_with_bias = np.append([1], self.layers[-2].output_vector)
+        out_with_bias = out_with_bias.reshape(len(out_with_bias), 1)
+        der_loss = np.matmul(out_with_bias, self.layers[-1].grad_vect)
         self.layers[-1].loss_derivative(der_loss)
         self.layers[-1].weight_matrix_update(self.l_rate)
 

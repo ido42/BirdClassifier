@@ -26,6 +26,7 @@ class Layer():
 
     def layer_output(self):
         self.output_vector = np.matmul(self.input_vector, self.weight_matrix)
+        self.output_vector=self.output_vector.reshape(len(self.output_vector),1)
 
     def loss_derivative(self, mat):
         self.loss_derivative_matrix = mat
