@@ -35,15 +35,15 @@ class ANN():
                              self.layers[-1].grad_vect)
         self.layers[-1].loss_derivative(der_loss)
         self.layers[-1].weight_matrix_update(self.l_rate)  # until here the last layer
-        for l in range(0, len(self.layers) - 1, -1):
-            der_relu = np.heaviside(self.layers[l].output_vector, 0)
-            delta = np.zeros((1, len(self.layers[l].output_vector)))
-            for i in range(len(self.layers[l].output_vector)):
-                for j in range(len(self.layers[l + 1].output_vector)):
-                    delta[i] += self.layers[l + 1].grad_vect[j] * self.layers[l + 1].weight_matrix[j + 1][i] * der_relu[
-                        i]
-            self.layers[l].grad_vector(np.transpose(delta))
-            der_loss = np.matmul(self.layers[l].input_vector.reshape(len(self.layers[l].input_vector), 1),
-                                 self.layers[l].grad_vect)
-            self.layers[l].loss_derivative(der_loss)
-            self.layers[l].weight_matrix_update(self.l_rate)  # until here the last layer
+        for l in range(len(self.layers) - 1, 1, -1):
+            der_relu = np.heaviside(self.layers[l - 1].output_vector, 0)
+            delta = np.zeros((1, len(self.layers[l - 1].output_vector)))
+            for i in range(len(self.layers[l - 1].output_vector)):
+                for j in range(len(self.layers[l].output_vector)):
+                    delta[0][i] += self.layers[l].grad_vect[0][j] * self.layers[l].weight_matrix[i + 1][j] * \
+                                   der_relu[i]
+            self.layers[l - 1].grad_vector(delta)
+            der_loss = np.matmul(self.layers[l - 1].input_vector.reshape(len(self.layers[l - 1].input_vector), 1),
+                                 self.layers[l - 1].grad_vect)
+            self.layers[l - 1].loss_derivative(der_loss)
+            self.layers[l - 1].weight_matrix_update(self.l_rate)
