@@ -2,11 +2,11 @@ from  Classes.Layer import *
 import numpy as np
 
 class ANN():
-    def __init__(self, num_layer, learning_rate, layers_neurons):  # layers_neurons is a list
-        self.num_layer = num_layer
+    def __init__(self, learning_rate, layers_neurons):  # layers_neurons is a list
+        self.num_layer = len(layers_neurons) - 1
         self.l_rate = learning_rate
         self.layers = []
-        for l in range(num_layer):
+        for l in range(self.num_layer):
             self.layers.append(Layer(layers_neurons[l], layers_neurons[l + 1]))
         self.softmax_out = None
 
@@ -21,8 +21,7 @@ class ANN():
             # softmax_out = np.exp(out)/sum(np.exp(out))
             self.layers[i].take_input(relu_out)
             self.layers[i].layer_output()
-        softmax_out = np.exp(self.layers[-1].output_vector) / sum(np.exp(self.layers[-1].output_vector))
-        self.softmax_out = softmax_out
+        self.softmax_out = np.exp(self.layers[-1].output_vector) / sum(np.exp(self.layers[-1].output_vector))
 
     def back_prop(self, result):  # result is in the form of a vector which is the same size with output
         cross_entropy = -np.sum(result * np.log(self.softmax_out))  # cross-entropy cost function
@@ -35,7 +34,8 @@ class ANN():
                              self.layers[-1].grad_vect)
         self.layers[-1].loss_derivative(der_loss)
         self.layers[-1].weight_matrix_update(self.l_rate)  # until here the last layer
-        for l in range(len(self.layers) - 1, 1, -1):
+
+        for l in range(len(self.layers) - 1, 0, -1):
             der_relu = np.heaviside(self.layers[l - 1].output_vector, 0)
             delta = np.zeros((1, len(self.layers[l - 1].output_vector)))
             for i in range(len(self.layers[l - 1].output_vector)):
