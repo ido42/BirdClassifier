@@ -4,7 +4,7 @@ class Layer():
     def __init__(self, begin_neuron_count, end_neuron_count, input_v=None):
         self.begin_neuron_count = begin_neuron_count
         self.end_neuron_count = end_neuron_count
-        if input_v!=None:
+        if input_v != None:
             self.input_vector = np.array([1], input_v) #1 is because of mean term
         else:
             self.input_vector= None
@@ -25,7 +25,7 @@ class Layer():
 
     def layer_output(self):
         self.output_vector = np.matmul(self.input_vector, self.weight_matrix)
-        self.output_vector=self.output_vector.reshape(len(self.output_vector),1)
+        self.output_vector = self.output_vector.reshape(len(self.output_vector),1)
 
     def loss_derivative(self, mat):
         self.loss_derivative_matrix = mat

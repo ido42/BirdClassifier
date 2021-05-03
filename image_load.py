@@ -1,42 +1,41 @@
 import os
-import numpy as np
 import cv2
-import random
+import numpy as np
+from sklearn.model_selection import KFold
 
-ProjectFolder = os.path.abspath(os.path.join(os.path.abspath(os.getcwd())))
-directory_name = os.path.dirname
-imgFolder = os.path.abspath(os.path.join(os.path.abspath(os.getcwd()), "Images"))
-imgTrain = os.path.abspath(os.path.join(os.path.abspath(os.getcwd()), "Images", "Train"))
-imgTrainBO = os.path.abspath(os.path.join(os.path.abspath(os.getcwd()), "Images", "Train", "BARN OWL"))
-imgTrainF = os.path.abspath(os.path.join(os.path.abspath(os.getcwd()), "Images", "Train", "FLAMINGO"))
-imgTrainTM = os.path.abspath(os.path.join(os.path.abspath(os.getcwd()), "Images", "Train", "TURQUOISE MOTMOT"))
+def image_load():
+    # ProjectFolder = os.path.abspath(os.path.join(os.path.abspath(os.getcwd())))
+    # directory_name = os.path.dirname
+    # imgFolder = os.path.abspath(os.path.join(os.path.abspath(os.getcwd()), "Images"))
+    trainPath = os.path.abspath(os.path.join(os.path.abspath(os.getcwd()), "Images", "Train"))
+    kf = KFold(n_splits=5, shuffle=True, random_state=1) # 5-fold validation split with random seed 1 for reproducibility
+    birdList = os.listdir(os.path.join(os.path.abspath(os.getcwd()), "Images", "Train"))
+    birdDict = {}
+    birdsEncoded = {}
+    birdsTrainFile = {}
+    birdsTestFile = {}
+    birdsTrain = {}
+    birdsTest = {}
 
-birdList = os.listdir(os.path.join(os.path.abspath(os.getcwd()), "Images", "Train"))
-birdDict = {"FLAMINGO": os.listdir(os.path.join(os.path.abspath(os.getcwd()), "Images", "Train", "FLAMINGO")),
-            "BARN OWL": os.listdir(os.path.join(os.path.abspath(os.getcwd()), "Images", "Train", "BARN OWL")),
-            "TURQUOISE MOTMOT": os.listdir(os.path.join(os.path.abspath(os.getcwd()), "Images", "Train", "TURQUOISE MOTMOT"))}
+    for bird in birdList:
+        birdDict[bird] = os.listdir(os.path.join(os.path.abspath(os.getcwd()), "Images", "Train", bird)) # get images (str)
+        oneHot = np.zeros(len(birdList))
+        oneHot[birdList.index(bird)] = 1
+        birdsEncoded[bird] = oneHot # one hot encode
+        birdsTrainFile[bird] = [] # initializing dicts for k-fold split
+        birdsTestFile[bird] = []
+        birdsTrain[bird] = []
+        birdsTest[bird] = []
 
-birdsEncoded = {"FLAMINGO": [0, 0, 1], "BARN OWL": [0, 1, 0], "TURQUOISE MOTMOT": [0,0,1]}
-imageNum = 0
-for bird in birdList:
-    imageNum += len(birdDict[bird])
-random.shuffle(birdList)
-train_birds = []
-train_species = []
-valid_birds = []
-valid_species = [] # species in encoded form ,list
-all_birds = [] # strings in the form "099.jpg"
-all_species = [] # strings, names of the corresponding birds
-for i in range(imageNum):
-    randBird = random.choice(birdList)
-    randImg = random.choice(birdDict[randBird])
-    if i > 4 * imageNum // 5:
-        train_birds.append(randImg)
-        train_species.append(birdsEncoded[randBird])
+    for bird in birdList: # generating the k-fold split
+        for tempTrainInd, tempTestInd in kf.split(birdDict[bird]):
+            for i in tempTrainInd:
+                birdsTrainFile[bird].append(birdDict[bird][i])
+                img = cv2.imread(trainPath.replace('\\', '/') + '/{0}/{1}'.format(bird,birdsTrainFile[bird][-1]))
+                birdsTrain[bird].append(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY))
+            for i in tempTestInd:
+                birdsTestFile[bird].append(birdDict[bird][i])
+                img = cv2.imread(trainPath.replace('\\', '/') + '/{0}/{1}'.format(bird, birdsTestFile[bird][-1]))
+                birdsTest[bird].append(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY))
 
-    else:
-        valid_species.append(birdsEncoded[randBird])
-        valid_birds.append(randImg)
-    all_birds.append(randImg)
-    all_species.append(randBird)
-
+    return birdsEncoded, birdsTrain, birdsTest, birdsTrainFile, birdsTestFile
