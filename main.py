@@ -5,11 +5,15 @@ from pooling import *
 import sys
 from matplotlib import pyplot as plt
 from Classes.ANN import *
-
+from logistic_regression import *
 #from Train import *
 from image_load import *
 
-"""Trainer = Train(3, 5, 25, 5, 0.1, [5, 5, 5, 2], 1, 'max')
+
+
+
+"""test for trainer class
+Trainer = Train(3, 5, 25, 5, 0.1, [5, 5, 5, 2], 1, 'max')
 
 for bird in range(len(train_species)):
     if train_species[bird] == [0, 1]:
@@ -18,6 +22,7 @@ for bird in range(len(train_species)):
         img = cv2.imread(imgTrainBO+"\\"+train_birds[bird])
     Trainer.train_with_one_img(img, train_species[bird] )"""
 
+#test for ANN
 tests = 500
 count = 0
 for j in range(tests):
@@ -49,5 +54,5 @@ for j in range(tests):
         count += 1
         # print('Successfully converged.')
     # else:
-        # print('Failed to converge.')
+        # print('Failed to converge.')"""
 print('\n'+str(100*count/tests)+'% accuracy.')
