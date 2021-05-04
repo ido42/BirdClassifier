@@ -1,9 +1,8 @@
 import numpy as np
 class logistic_regression():
-    def __init__(self,input_size,learning_rate,num_classes,bird_dict):
-        self.bird_dict=bird_dict
+    def __init__(self,input_size,learning_rate,num_classes):
         self.input_size=input_size
-        self.num_classes=num_classes
+        self.num_classes=num_classes # the number of bird species
         self.weights=np.random.rand(self.input_size[1]+1,self.num_classes)# one vs all, each column for one class
         self.l_rate=learning_rate
     def gradient_descent(self,inputs,labels): # label rows are one hot
@@ -22,8 +21,9 @@ class logistic_regression():
         return(results)
     def classify(self,inp):#while classifying one input at a time,input is a row vector
         inp=np.append([1],inp)
+        inp=np.reshape(inp,(1,len(inp)))
         classes_probabilities=1/(1+np.exp(-np.matmul(inp,self.weights)))# each element has the probability of relative class, this is a row vector
         bird_num=int(np.where(classes_probabilities==np.max(classes_probabilities))[0])
-        #bird=num=
-        bird_name=self.bird_dict[bird_num]
-        return (bird_name)
+        bird_class_encoded=np.zeros((1,self.num_classes))
+        bird_class_encoded[:,bird_num]=1
+        return (bird_class_encoded)
