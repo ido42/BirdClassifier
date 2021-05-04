@@ -5,11 +5,30 @@ from pooling import *
 import sys
 from matplotlib import pyplot as plt
 from Classes.ANN import *
-
+from logistic_regression import *
 #from Train import *
 from image_load import *
+"""
+birdsEncoded, birdsTrain, birdsTest, birdsTrainFile, birdsTestFile=image_load()
+dict_keys=list(birdsTest.keys())
+inp,output=shuffled_matrices(birdsTrain,birdsEncoded,3)
+print("matrices are ready")
 
-"""Trainer = Train(3, 5, 25, 5, 0.1, [5, 5, 5, 2], 1, 'max')
+log=logistic_regression(np.shape(inp),0.2,3)
+log.gradient_descent(inp,output)
+print(("trained"))
+rand_int=random.randint(0,2)
+new_input=birdsTest[dict_keys[rand_int]]
+print(dict_keys[rand_int])
+encoded_result=log.classify(new_input.flatten())
+print(encoded_result)"""
+
+"""while True:
+    cv2.imshow("m",birdsTrain['BARN OWL'][0])
+    key=cv2.waitKey(1)
+    if key == ord('q'):
+        break
+Trainer = Train(3, 5, 25, 5, 0.1, [5, 5, 5, 2], 1, 'max')
 
 for bird in range(len(train_species)):
     if train_species[bird] == [0, 1]:
