@@ -9,37 +9,30 @@ class poolingLayer:
         self.positions = []
 
     def pool(self, matrix):
-        self.positions = []
-        self.matrix = matrix
+        self.positions = np.zeros_like(matrix)
+        self.kernelNum = matrix.shape[2]
         self.cellSize = matrix.shape[0] // self.outputSize
-        temp = np.empty((self.outputSize,self.outputSize, matrix.shape[2]))
-        for kernel_i in np.arange(0, matrix.shape[2],dtype="int"):
-            positions = []
+        temp = np.empty((self.outputSize,self.outputSize, self.kernelNum))
+        for kernel_i in np.arange(0, self.kernelNum,dtype="int"):
             for i in np.arange(0, self.outputSize,dtype="int"):
-                for j in np.arange(0,self.outputSize,dtype="int"):  # when we use the indices as earlier, the decimal parts cause problems
+                for j in np.arange(0,self.outputSize,dtype="int"):
                     if self.ptype == 'max':
                         cell = matrix[i*self.cellSize:(i+1)*self.cellSize, j*self.cellSize:(j+1)*self.cellSize, kernel_i]
                         cellMax = np.max(cell)
                         temp[i, j, kernel_i] = cellMax
+                        ind = np.where(cell == cellMax)
                         if cellMax == 0:
-                            positions.append((0,0))
+                            self.positions[i*self.cellSize, j*self.cellSize, kernel_i] = 1
                         else:
-                            ind = np.where(cell == cellMax) #keeps the info about where the maxes ar at the self.matrix
-                            positions.append((ind[0][0], ind[1][0]))
+                            self.positions[i*self.cellSize+ind[0][0], j*self.cellSize+ind[1][0], kernel_i] = 1
                     if self.ptype == 'mean':
                         temp[i, j] = np.mean(matrix[i*self.cellSize:(i+1)*self.cellSize, j*self.cellSize:(j+1)*self.cellSize])
-            positions = np.reshape(positions,(self.outputSize,self.outputSize,2))
-            self.positions.append(positions)
         self.pooled = temp
         return self.pooled
 
-    def getLoss(self, loss):
-        lossMatSize = 2*np.sqrt(len(loss[0]))
-        lossMatrix = np.reshape(loss, (len(self.positions),lossMatSize,lossMatSize))
-        self.loss = np.zeros_like(lossMatrix)
-        for kernel in self.positions:
-            for i in np.arange(0, self.outputSize, dtype="int"):
-                for j in np.arange(0, self.outputSize, dtype="int"):
-                    self.loss[kernel, i*self.cellSize+self.positions[kernel][i,j,0],
-                              j*self.cellSize+self.positions[kernel][i,j,1]] = lossMatrix[kernel,i,j]
-        return self.loss
+    def getGrad(self, grad):
+        gradMatSize = np.int_(np.sqrt(loss.shape[0]/self.kernelNum))
+        gradMatrix = np.reshape(grad, (self.kernelNum, lossMatSize,lossMatSize))
+        gradMatrix = gradMatrix.repeat(2, axis=1).repeat(2, axis=2)
+        self.grad = np.moveaxis(self.positions,-1,0)*gradMatrix
+        return np.moveaxis(self.grad, 0, -1)
