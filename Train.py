@@ -1,6 +1,7 @@
 from conv2D import *
 from pooling import *
 from Classes.ANN import *
+
 class Train():
     def __init__(self, convKernelNum, convKernelSize, poolOutputSize, ann_num_layer, ann_learning_rate, ann_layers_neurons, conv_stride = 1, pool_ptype = 'max'):
         self.convKernelNum = convKernelNum

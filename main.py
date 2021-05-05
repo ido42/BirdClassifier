@@ -37,37 +37,72 @@ for bird in range(len(train_species)):
         img = cv2.imread(imgTrainBO+"\\"+train_birds[bird])
     Trainer.train_with_one_img(img, train_species[bird] )"""
 
+""" 
+print("matrices are ready")
+print(np.shape(inp))
+print(np.shape(output))
+input_size=np.shape(inp)
+shf_in, shf_out = shuffle_matrix(inp,output)
+num_classes=3
+print("shuffled")
+with open('huge_shf_matrix_in.pickle', 'wb') as dump_var1:
+    pickle.dump(shf_in, dump_var1)
+with open('huge_shf_matrix_out.pickle', 'wb') as dump_var2:
+    pickle.dump(shf_out, dump_var2)"""
 
-tests = 222
-count = 0
-for j in range(tests):
-    sys.stdout.write("\r----- {:3.4}% done -----".format(100*(j+1)/tests))
-    sys.stdout.flush()
+pickle_in = open('huge_shf_matrix_in.pickle', 'rb')
+inp_mat = pickle.load(pickle_in)
+pickle_out = open('huge_shf_matrix_out.pickle', 'rb')
+out_mat = pickle.load(pickle_out)
+learning_rate=0.1
+smp_in=inp_mat[0:100]# take sample
+smp_out=out_mat[0:100]
+layers_neurons=[smp_in.shape[1],100,100,100,10,3]
+network=ANN(learning_rate, layers_neurons)
+network.forward_pass(smp_in[0])
+for i in range(smp_in.shape[0]):
+    while any((abs(smp_out[i]-network.softmax_out.transpose())>np.ones((1,np.size(smp_out[i])))*0.05)[0]):
+        network.forward_pass(smp_in[i])
+        network.back_prop_m(smp_out[i])
+        e=smp_out[i] - network.softmax_out.transpose()
+print(("trained"))
+network.forward_pass(inp_mat[10])
+bird_num=int(np.where(network.softmax_out==np.max(network.softmax_out))[0])
+bird_class_encoded=np.zeros((1,3))
+bird_class_encoded[:,bird_num]=1
+print(bird_class_encoded)
+print(out_mat[10])
 
-#   parameters
-    x = np.array(range(1000))
-    x = (x - x.mean())/x.var()
-    learning_rate=0.01
-    layers_neurons=[1000,100,10]
-    network=ANN(learning_rate, layers_neurons)
-    result=np.array([0,0,1,0,0,0,0,0,0,0])
-    soft_list=[]
-
-    for i in range(1000):
-        network.forward_pass(x)
-        # print(network.softmax_out)
-        res = True in [ele < 10e-15 or np.isnan(ele) for ele in network.softmax_out] # if a value is dangerously small or NaN
-        if res:
-            # print('Epoch', i + 1, 'overflows.')
-            # if 1-network.softmax_out[2] < 10e-90:
-                # print('Successfully converged.')
-            break
-        network.back_prop(result)
-        soft_list.append(network.softmax_out)
-
-    if 1 - network.softmax_out[2] < 0.05: # if the output is sufficiently close to the result
-        count += 1
-        # print('Successfully converged.')
-    # else:
-        # print('Failed to converge.')
-print('\n{:3.4}% accuracy.'.format(100*count/tests))
+# tests = 222
+# count = 0
+# for j in range(tests):
+#     sys.stdout.write("\r----- {:3.4}% done -----".format(100*(j+1)/tests))
+#     sys.stdout.flush()
+#
+# #   parameters
+#     x = np.array(range(1000))
+#     x = (x - x.mean())/np.sqrt(x.var())
+#     learning_rate=0.01
+#     layers_neurons=[1000,5,10]
+#     network=ANN(learning_rate, layers_neurons)
+#     result=np.array([0,0,1,0,0,0,0,0,0,0])
+#     soft_list=[]
+#
+#     for i in range(1000):
+#         network.forward_pass(x)
+#         # print(network.softmax_out)
+#         res = True in [ele < 10e-15 or np.isnan(ele) for ele in network.softmax_out] # if a value is dangerously small or NaN
+#         if res:
+#             # print('Epoch', i + 1, 'overflows.')
+#             # if 1-network.softmax_out[2] < 10e-90:
+#                 # print('Successfully converged.')
+#             break
+#         network.back_prop(result)
+#         soft_list.append(network.softmax_out)
+#
+#     if 1 - network.softmax_out[2] < 0.05: # if the output is sufficiently close to the result
+#         count += 1
+#         # print('Successfully converged.')
+#     # else:
+#         # print('Failed to converge.')
+# print('\n{:3.4}% accuracy.'.format(100*count/tests))

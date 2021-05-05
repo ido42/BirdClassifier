@@ -20,17 +20,22 @@ class ANN:
             self.layers[i].layer_output()
         self.softmax_out = np.exp(self.layers[-1].output_vector) / sum(np.exp(self.layers[-1].output_vector))
 
-    def back_prop(self, result):  # result is in the form of a vector which is the same size with output
-        cross_entropy = -np.sum(result * np.log(self.softmax_out))  # cross-entropy cost function
-        der_soft = np.exp(self.layers[-1].output_vector) * (
-                    np.sum(np.exp(self.layers[-1].output_vector)) - np.exp(self.layers[-1].output_vector)) / np.sum(
-            np.exp(self.layers[-1].output_vector)) ** 2
-        delta = cross_entropy * der_soft
-        self.layers[-1].grad_vector(np.transpose(delta))
-        der_loss = np.matmul(self.layers[-1].input_vector.reshape(len(self.layers[-1].input_vector), 1),
-                             self.layers[-1].grad_vect)
-        self.layers[-1].loss_derivative(der_loss)
-        self.layers[-1].weight_matrix_update(self.l_rate)  # until here the last layer
+    def back_prop_m(self, result):
+        last_der_loss = np.matmul(self.layers[-1].input_vector.reshape(np.size(self.layers[-1].input_vector), 1),
+                                  self.softmax_out.transpose() - result)
+        self.layers[-1].grad_vector(-self.softmax_out.transpose() + result)
+        self.layers[-1].loss_derivative(last_der_loss)
+        self.layers[-1].weight_matrix = -self.layers[-1].loss_derivative_matrix * self.l_rate + self.layers[
+            -1].weight_matrix
+        for l in range(len(self.layers) - 1, 0, -1):  # other layers
+            der_relu = np.heaviside(self.layers[l - 1].output_vector, 0)
+            delta = np.matmul(self.layers[l].weight_matrix[1:], self.layers[l].grad_vect.transpose()) * der_relu
+            self.layers[l - 1].grad_vector(delta.transpose())
+            der_loss = np.matmul(self.layers[l - 1].input_vector.reshape(np.size(self.layers[l - 1].input_vector), 1),
+                                 self.layers[l - 1].grad_vect)
+            self.layers[l - 1].loss_derivative(der_loss)
+            self.layers[l - 1].weight_matrix = -self.layers[l - 1].loss_derivative_matrix * self.l_rate + self.layers[
+                l - 1].weight_matrix
 
         for l in range(len(self.layers) - 1, 0, -1):
             der_relu = np.heaviside(self.layers[l - 1].output_vector, 1)
