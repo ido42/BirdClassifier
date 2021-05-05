@@ -27,8 +27,12 @@ class poolingLayer:
         return self.pooled
 
     def getGrad(self, grad):
-        gradMatSize = np.int_(np.sqrt(loss.shape[0]/self.kernelNum))
-        gradMatrix = np.reshape(grad, (self.kernelNum, lossMatSize,lossMatSize))
-        gradMatrix = gradMatrix.repeat(2, axis=1).repeat(2, axis=2)
-        self.grad = np.moveaxis(self.positions,-1,0)*gradMatrix
-        return np.moveaxis(self.grad, 0, -1)
+        if grad.shape[1] == 1:
+            gradMatSize = np.int_(np.sqrt(loss.shape[0]/self.kernelNum))
+            gradMatrix = np.reshape(grad, (self.kernelNum, lossMatSize,lossMatSize))
+            gradMatrix = gradMatrix.repeat(self.cellSize, axis=1).repeat(self.cellSize, axis=2)
+            self.grad = np.moveaxis(self.positions,-1,0)*gradMatrix
+            self.grad = np.moveaxis(self.grad, 0, -1)
+        else:
+            gradMatrix = gradMatrix.repeat(self.cellSize, axis=1).repeat(self.cellSize, axis=2)
+            self.grad = self.positions * gradMatrix

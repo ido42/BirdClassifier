@@ -49,3 +49,8 @@ class ANN:
                                  self.layers[l - 1].grad_vect)
             self.layers[l - 1].loss_derivative(der_loss)
             self.layers[l - 1].weight_matrix_update(self.l_rate)
+
+    def dropout(self, drop_probability):
+        for d in range(len(self.layers)):
+            drop_neurons = np.random.binomial(1, 1 - drop_probability, len(self.layers[d].input_vector))
+            self.layers[d].input_vector = self.layers[d].input_vector * drop_neurons

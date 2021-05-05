@@ -3,11 +3,13 @@ import numpy as np
 from conv2D import *
 from pooling import *
 import sys
+import pickle
 from matplotlib import pyplot as plt
 from Classes.ANN import *
 from logistic_regression import *
 #from Train import *
 from image_load import *
+
 """
 birdsEncoded, birdsTrain, birdsTest, birdsTrainFile, birdsTestFile=image_load()
 dict_keys=list(birdsTest.keys())
@@ -50,6 +52,7 @@ with open('huge_shf_matrix_in.pickle', 'wb') as dump_var1:
 with open('huge_shf_matrix_out.pickle', 'wb') as dump_var2:
     pickle.dump(shf_out, dump_var2)"""
 
+"""
 pickle_in = open('huge_shf_matrix_in.pickle', 'rb')
 inp_mat = pickle.load(pickle_in)
 pickle_out = open('huge_shf_matrix_out.pickle', 'rb')
@@ -71,7 +74,22 @@ bird_num=int(np.where(network.softmax_out==np.max(network.softmax_out))[0])
 bird_class_encoded=np.zeros((1,3))
 bird_class_encoded[:,bird_num]=1
 print(bird_class_encoded)
-print(out_mat[10])
+print(out_mat[10])"""
+
+learning_rate=0.1
+num_classes=3
+reg_lambda=0.2
+input_size=inp_mat[0:10].shape
+log=logistic_regression(input_size,learning_rate,num_classes,reg_lambda)
+for i in range(10):
+    smp_in=inp_mat[i/10:(i+1)/10]# take sample
+    smp_out=out_mat[i/10:(i+1)/10]
+    log.gradient_descent(smp_in, smp_out )
+print("trained")
+
+the_bird=log.classify(inp_mat[100])
+print (the_bird)
+print(out_mat[100])
 
 # tests = 222
 # count = 0
