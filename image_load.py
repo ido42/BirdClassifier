@@ -33,20 +33,22 @@ def image_load(BW=True):
             for i in tempTrainInd:
                 birdsTrainFile[bird].append(birdDict[bird][i])
                 img = cv2.imread(trainPath.replace('\\', '/') + '/{0}/{1}'.format(bird,birdsTrainFile[bird][-1]))
-                img = img / 255
                 if BW:
                     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                    img = img / 255
                     birdsTrain[bird].append(img)
                 else:
+                    img = img / 255
                     birdsTrain[bird].append(img)
             for i in tempTestInd:
                 birdsTestFile[bird].append(birdDict[bird][i])
                 img = cv2.imread(trainPath.replace('\\', '/') + '/{0}/{1}'.format(bird, birdsTestFile[bird][-1]))
-                img = img / 255
                 if BW:
                     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                    img = img / 255
                     birdsTest[bird].append(img)
                 else:
+                    img = img / 255
                     birdsTest[bird].append(img)
 
     return birdsEncoded, birdsTrain, birdsTest, birdsTrainFile, birdsTestFile
