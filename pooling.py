@@ -34,5 +34,5 @@ class poolingLayer:
             self.grad = np.moveaxis(self.positions,-1,0)*gradMatrix
             self.grad = np.moveaxis(self.grad, 0, -1)
         else:
-            gradMatrix = gradMatrix.repeat(self.cellSize, axis=1).repeat(self.cellSize, axis=2)
+            gradMatrix = gradMatrix.repeat(self.cellSize, axis=0).repeat(self.cellSize, axis=1)
             self.grad = self.positions * gradMatrix
