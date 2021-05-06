@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import random
 from conv2D import *
 from pooling import *
 import sys
@@ -9,16 +10,40 @@ from Classes.ANN import *
 from logistic_regression import *
 #from Train import *
 from image_load import *
+"""birdsEncoded, birdsTrain, birdsTest, birdsTrainFile, birdsTestFile=image_load()
+pickle_ann = open('trained_ann.pickle', 'rb')
+ann = pickle.load(pickle_ann)
+pickle_in = open('huge_shf_matrix_in.pickle', 'rb')
+inp_mat = pickle.load(pickle_in)
+pickle_out = open('huge_shf_matrix_out.pickle', 'rb')
+out_mat = pickle.load(pickle_out)
+rand_int=random.randint(0,out_mat.shape[0]-1)
 
-"""
-birdsEncoded, birdsTrain, birdsTest, birdsTrainFile, birdsTestFile=image_load()
+
+
+
+ann.forward_pass(inp_mat[rand_int])
+#bird_num = int(np.where(ann.softmax_out == np.max(ann.softmax_out))[0])
+#bird_class_encoded = np.zeros((1, 3))
+#bird_class_encoded[:, bird_num] = 1
+print(ann.softmax_out)
+print(out_mat[rand_int])
+
 dict_keys=list(birdsTest.keys())
+rand_int=random.randint(0,2)
+new_input=birdsTest[dict_keys[rand_int]]
+print(birdsTest[dict_keys[rand_int]])
+print(dict_keys[rand_int])
+encoded_result=new_input.flatten()
+print(encoded_result)
+
+dict_keys=birdsTest.values()
 inp,output=shuffled_matrices(birdsTrain,birdsEncoded,3)
 print("matrices are ready")
 
 log=logistic_regression(np.shape(inp),0.2,3)
 log.gradient_descent(inp,output)
-print(("trained"))
+
 rand_int=random.randint(0,2)
 new_input=birdsTest[dict_keys[rand_int]]
 print(dict_keys[rand_int])
@@ -39,57 +64,52 @@ for bird in range(len(train_species)):
         img = cv2.imread(imgTrainBO+"\\"+train_birds[bird])
     Trainer.train_with_one_img(img, train_species[bird] )"""
 
-""" 
-print("matrices are ready")
-print(np.shape(inp))
-print(np.shape(output))
-input_size=np.shape(inp)
-shf_in, shf_out = shuffle_matrix(inp,output)
-num_classes=3
-print("shuffled")
-with open('huge_shf_matrix_in.pickle', 'wb') as dump_var1:
-    pickle.dump(shf_in, dump_var1)
-with open('huge_shf_matrix_out.pickle', 'wb') as dump_var2:
-    pickle.dump(shf_out, dump_var2)"""
 
-"""
+
+
 pickle_in = open('huge_shf_matrix_in.pickle', 'rb')
 inp_mat = pickle.load(pickle_in)
 pickle_out = open('huge_shf_matrix_out.pickle', 'rb')
 out_mat = pickle.load(pickle_out)
 learning_rate=0.1
-smp_in=inp_mat[0:100]# take sample
-smp_out=out_mat[0:100]
-layers_neurons=[smp_in.shape[1],100,100,100,10,3]
-network=ANN(learning_rate, layers_neurons)
-network.forward_pass(smp_in[0])
-for i in range(smp_in.shape[0]):
-    while any((abs(smp_out[i]-network.softmax_out.transpose())>np.ones((1,np.size(smp_out[i])))*0.05)[0]):
-        network.forward_pass(smp_in[i])
-        network.back_prop_m(smp_out[i])
-        e=smp_out[i] - network.softmax_out.transpose()
+"""
+b_size=np.shape(inp_mat)[0]//15
+lmb=0.1
+log=logistic_regression(np.shape(inp_mat[0:b_size]),learning_rate,3,lmb)
+for epoch in range(10):
+    inp_mat,out_mat=shuffle_matrix(inp_mat,out_mat)
+    for b in range(14):
+        log.gradient_descent(inp_mat[b*b_size:(b+1)*b_size],out_mat[b*b_size:(b+1)*b_size])
+        print("epoch" + str(epoch)+"batch"+str(b))
 print(("trained"))
-network.forward_pass(inp_mat[10])
-bird_num=int(np.where(network.softmax_out==np.max(network.softmax_out))[0])
-bird_class_encoded=np.zeros((1,3))
-bird_class_encoded[:,bird_num]=1
-print(bird_class_encoded)
-print(out_mat[10])"""
+rand_int=random.randint(0,np.shape(inp_mat)[0])
+new_input=inp_mat[rand_int]
+encoded_result=log.classify(new_input)
+print(encoded_result)
+print(out_mat[rand_int])"""
+"""
+layers_neurons=[inp_mat.shape[1],10,10,3]
+network=ANN(learning_rate, layers_neurons)
+network.forward_pass(inp_mat[0])
 
-learning_rate=0.1
-num_classes=3
-reg_lambda=0.2
-input_size=inp_mat[0:10].shape
-log=logistic_regression(input_size,learning_rate,num_classes,reg_lambda)
-for i in range(10):
-    smp_in=inp_mat[i/10:(i+1)/10]# take sample
-    smp_out=out_mat[i/10:(i+1)/10]
-    log.gradient_descent(smp_in, smp_out )
-print("trained")
+#for epoch in range(10):
+ #   inp_mat,out_mat=shuffle_matrix(inp_mat,out_mat)
 
-the_bird=log.classify(inp_mat[100])
-print (the_bird)
-print(out_mat[100])
+for i in range(inp_mat.shape[0]): # feed every image in train set
+    while any((abs(out_mat[i]-network.softmax_out.transpose())>np.ones((1,np.size(out_mat[i])))*0.02)[0]):
+        network.forward_pass(inp_mat[i])
+        network.back_prop_m(out_mat[i])
+   # print("epoch"+str(epoch))
+print(("trained"))
+print(network.softmax_out)
+rand_int=random.randint(0,out_mat.shape[0]-1)
+network.forward_pass(inp_mat[rand_int])
+print(network.softmax_out)
+print(out_mat[rand_int])"""
+"""
+with open('trained_ann.pickle', 'wb') as dump_var1:
+    pickle.dump(network, dump_var1)
+"""
 
 # tests = 222
 # count = 0
