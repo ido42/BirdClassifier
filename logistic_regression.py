@@ -33,8 +33,13 @@ class logistic_regression:
         inp=np.reshape(inp,(1,len(inp)))
         inp = (inp - inp.mean()) / np.sqrt(inp.var()) #normalize the vect
         classes_probabilities=1/(1+np.exp(-np.matmul(inp,self.weights)))# each element has the probability of relative class, this is a row vector
-        bird_num=int(np.where(classes_probabilities==np.max(classes_probabilities))[0])
-        bird_class_encoded=np.zeros((1,self.num_classes))
-        bird_class_encoded[:,bird_num]=1
-        return (bird_class_encoded)
+        try:
+            bird_num=int(np.where(classes_probabilities==np.max(classes_probabilities))[0])
+            bird_class_encoded=np.zeros((1,self.num_classes))
+            bird_class_encoded[:,bird_num]=1
+            Fail=False
+        except:
+            bird_class_encoded=None
+            Fail=True
+        return bird_class_encoded,Fail
 

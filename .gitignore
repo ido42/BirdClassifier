@@ -1,3 +1,8 @@
 /conv_pool_test.py
 /huge_shf_matrix_in.pickle
 /huge_shf_matrix_out.pickle
+/pooled_in_56_10birds.pickle
+/pooled_out_56_10birds.pickle
+/pooled_ti_56_10birds.pickle
+/pooled_to_56_10birds.pickle
+/trained_log_reg.pickle
