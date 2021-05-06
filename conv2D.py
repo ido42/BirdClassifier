@@ -20,10 +20,8 @@ class conv2D:
         convOut = np.empty(self.outputSize)  # 3d array to store conv2d outputs
         for kernel_i in np.arange(self.kernelNum, dtype="int"):
             temp = np.zeros((convSize,convSize))
-            for C in np.arange(self.inputSize[1], dtype="int"):
-                for i in np.arange(0, self.inputSize[0] - self.kernelSize + 1, self.stride, dtype="int"):  # start top-left move until kernel hits edge
-                    for j in np.arange(0, self.inputSize[0] - self.kernelSize + 1, self.stride, dtype="int"):
-                        temp[i, j] = np.sum(input[i:i + self.kernelSize, j:j + self.kernelSize, C] * self.kernelMatrix[kernel_i, :, :]) + self.bias[kernel_i]
+            for C in np.arange(self.inputSize[2], dtype="int"):
+                temp = convolve2d(input[:,:,C],self.kernelMatrix[kernel_i, :, :], mode='valid') + self.bias[kernel_i]
                 convOut[:, :, kernel_i] += temp
             self.convOut = np.maximum(convOut, np.zeros_like(convOut))  # apply ReLU before output
         return self.convOut
