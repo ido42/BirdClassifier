@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 from sklearn.model_selection import KFold
 import random
-
+from pooling import *
 def image_load(BW=True):
     # ProjectFolder = os.path.abspath(os.path.join(os.path.abspath(os.getcwd())))
     # directory_name = os.path.dirname
@@ -53,20 +53,23 @@ def image_load(BW=True):
 
     return birdsEncoded, birdsTrain, birdsTest, birdsTrainFile, birdsTestFile
 
-def img_load_matrices(images,encoded_birds,num_classes):
-    inp_img_mat=np.zeros((1,50176)) #the matrix containing all images, each flatten image in a row
+def img_load_matrices(pool_size,images,encoded_birds,num_classes):
+    pool=poolingLayer(pool_size)
+    inp_img_mat=np.zeros((1,pool_size**2)) #the matrix containing all images, each flatten image in a row
     labels_mat=np.zeros((1,num_classes)) # the matrix containing labels for the corresponding images, rows are encoded bird keys
     bird_names=list(images.keys())
     count=0
     for bird in range(len(bird_names)):
         for i in range(len(images[bird_names[bird]])):
-            inp_img_mat=np.append(inp_img_mat,np.reshape(images[bird_names[bird]][i],(1,np.size(images[bird_names[bird]][i]))))
+            inp=pool.pool(images[bird_names[bird]][i])
+            inp_img_mat=np.append(inp_img_mat,np.reshape(inp,(1,np.size(inp))))
             labels_mat=np.append(labels_mat,encoded_birds[bird_names[bird]])
             count +=1
     labels_mat=np.reshape(labels_mat[num_classes:],(count,num_classes))
-    inp_img_mat=np.reshape(inp_img_mat[50176:], (count, 50176))
+    inp_img_mat=np.reshape(inp_img_mat[pool_size**2:], (count, pool_size**2))
     inp_img_mat = (inp_img_mat - inp_img_mat.mean()) / np.sqrt(inp_img_mat.var())
     return inp_img_mat, labels_mat
+
 
 def shuffle_matrix(inp_img_mat, labels_mat):
     count=np.shape(inp_img_mat)[0]
