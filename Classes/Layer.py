@@ -17,6 +17,7 @@ class Layer():
             self.output_vector = None
 
     def take_input(self, input_v):
+        input_v = np.maximum(0, input_v)
         self.input_vector = np.append([1], input_v)
 
     def weight_matrix_update(self, l_rate):  # put the weights
@@ -24,7 +25,7 @@ class Layer():
         self.weight_matrix = self.weight_matrix+self.loss_derivative_matrix*l_rate
 
     def layer_output(self):
-        self.output_vector = np.matmul(self.input_vector, self.weight_matrix)
+        self.output_vector = np.nan_to_num(np.matmul(self.input_vector, self.weight_matrix))
         self.output_vector = self.output_vector.reshape(len(self.output_vector),1)
 
     def loss_derivative(self, mat):
