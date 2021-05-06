@@ -18,7 +18,7 @@ class ANN:
             relu_out = np.maximum(0, self.layers[i - 1].output_vector)
             self.layers[i].take_input(relu_out)
             self.layers[i].layer_output()
-        self.softmax_out = np.exp(self.layers[-1].output_vector) / sum(np.exp(self.layers[-1].output_vector))
+        self.softmax_out = np.nan_to_num(np.exp(self.layers[-1].output_vector) / sum(np.exp(self.layers[-1].output_vector)))
 
     def back_prop_m(self, result):
         last_der_loss = np.matmul(self.layers[-1].input_vector.reshape(np.size(self.layers[-1].input_vector), 1),
