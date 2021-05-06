@@ -1,12 +1,4 @@
-import cv2
-import numpy as np
-import random
-from conv2D import *
-from pooling import *
-import sys
 import pickle
-from matplotlib import pyplot as plt
-from Classes.ANN import *
 from logistic_regression import *
 #from Train import *
 from image_load import *
@@ -78,6 +70,7 @@ for bird in range(len(train_species)):
         img = cv2.imread(imgTrainBO+"\\"+train_birds[bird])
     Trainer.train_with_one_img(img, train_species[bird] )
 """
+
 num_cl=10
 l_r=0.2
 reg_lambda=0.05

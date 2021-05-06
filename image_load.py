@@ -1,9 +1,8 @@
 import os
 import cv2
-import numpy as np
 from sklearn.model_selection import KFold
 import random
-from pooling import *
+from Classes.pooling import *
 def image_load(BW=True):
     # ProjectFolder = os.path.abspath(os.path.join(os.path.abspath(os.getcwd())))
     # directory_name = os.path.dirname

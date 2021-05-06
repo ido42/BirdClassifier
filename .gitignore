@@ -1,4 +1,5 @@
 /conv_pool_test.py
+/ann_test.py
 /huge_shf_matrix_in.pickle
 /huge_shf_matrix_out.pickle
 /pooled_in_56_10birds.pickle

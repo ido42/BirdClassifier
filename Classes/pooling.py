@@ -2,7 +2,6 @@ import numpy as np
 
 class poolingLayer:
     def __init__(self, outputSize):
-        self.err = 0
         self.outputSize = outputSize
         self.cellSize = None
         self.positions = []
@@ -12,9 +11,9 @@ class poolingLayer:
         try:
             self.kernelNum = matrix.shape[2]
         except:
-            self.kernelNum=1
+            self.kernelNum = 1
         self.cellSize = matrix.shape[0] // self.outputSize
-        temp = np.empty((self.outputSize,self.outputSize, self.kernelNum))
+        temp = np.zeros((self.outputSize,self.outputSize, self.kernelNum))
         if self.kernelNum==1:
             for i in np.arange(0, self.outputSize,dtype="int"):
                 for j in np.arange(0,self.outputSize,dtype="int"):
@@ -43,8 +42,8 @@ class poolingLayer:
 
     def getGrad(self, grad):
         if grad.shape[1] == 1:
-            gradMatSize = np.int_(np.sqrt(loss.shape[0]/self.kernelNum))
-            gradMatrix = np.reshape(grad, (self.kernelNum, lossMatSize,lossMatSize))
+            gradMatSize = np.int_(np.sqrt(grad.shape[0]/self.kernelNum))
+            gradMatrix = np.reshape(grad, (self.kernelNum, gradMatSize,gradMatSize))
             gradMatrix = gradMatrix.repeat(self.cellSize, axis=1).repeat(self.cellSize, axis=2)
             self.grad = np.moveaxis(self.positions,-1,0)*gradMatrix
             self.grad = np.moveaxis(self.grad, 0, -1)

@@ -1,5 +1,5 @@
-from conv2D import *
-from pooling import *
+from Classes.conv2D import *
+from Classes.pooling import *
 from Classes.ANN import *
 
 class Train():
