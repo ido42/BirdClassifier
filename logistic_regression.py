@@ -23,6 +23,12 @@ class logistic_regression:
                 pred = np.matmul(inputs, self.weights[:, c])
                 sigmoid = np.nan_to_num(1 / (1 + np.exp(-pred)))
 
+    def cost(self,inp,label):
+        pred = np.matmul(inp, self.weights)
+        sigmoid = np.nan_to_num(1 / (1 + np.exp(-pred)))
+        error=-np.sum(label*np.log(sigmoid))
+        return error
+
     def classify(self,inp):#while classifying one input at a time,input is a row vector
         #inp=np.append([1],inp)
         #inp=np.reshape(inp,(1,len(inp)))

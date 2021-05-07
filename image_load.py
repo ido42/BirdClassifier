@@ -73,7 +73,7 @@ def img_load_matrices(pool_size,images,encoded_birds,num_classes):
 
 def shuffle_matrix(inp_img_mat, labels_mat):
     count=np.shape(inp_img_mat)[0]
-    for s in range(count//2):
+    for s in range(count*2):
         location=random.randint(0,count-1)
         destination=random.randint(0,count-1)
         shuffled_img_mat_copy=inp_img_mat[destination]
