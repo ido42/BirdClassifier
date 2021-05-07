@@ -10,6 +10,7 @@ def image_load(BW=True):
     trainPath = os.path.abspath(os.path.join(os.path.abspath(os.getcwd()), "Images", "Train"))
     kf = KFold(n_splits=5, shuffle=True, random_state=1) # 5-fold validation split with random seed 1 for reproducibility
     birdList = os.listdir(os.path.join(os.path.abspath(os.getcwd()), "Images", "Train"))
+    oneHot = np.eye(len(birdList))
     birdDict = {}
     birdsEncoded = {}
     birdsTrainFile = {}
@@ -19,15 +20,14 @@ def image_load(BW=True):
 
     for bird in birdList:
         birdDict[bird] = os.listdir(os.path.join(os.path.abspath(os.getcwd()), "Images", "Train", bird)) # get images (str)
-        oneHot = np.zeros(len(birdList))
-        oneHot[birdList.index(bird)] = 1
-        birdsEncoded[bird] = oneHot # one hot encode
+        birdsEncoded[bird] = oneHot[birdList.index(bird), :] # one hot encode
         birdsTrainFile[bird] = [] # initializing dicts for k-fold split
         birdsTestFile[bird] = []
-        birdsTrain[bird] = []
-        birdsTest[bird] = []
+        birdsTrain[bird] = [[],[],[],[],[]]
+        birdsTest[bird] = [[],[],[],[],[]]
 
     for bird in birdList: # generating the k-fold split
+        count = 0
         for tempTrainInd, tempTestInd in kf.split(birdDict[bird]):
             for i in tempTrainInd:
                 birdsTrainFile[bird].append(birdDict[bird][i])
@@ -35,20 +35,21 @@ def image_load(BW=True):
                 if BW:
                     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
                     img = img / 255
-                    birdsTrain[bird].append(img)
+                    birdsTrain[bird][count].append(img)
                 else:
                     img = img / 255
-                    birdsTrain[bird].append(img)
+                    birdsTrain[bird][count].append(img)
             for i in tempTestInd:
                 birdsTestFile[bird].append(birdDict[bird][i])
                 img = cv2.imread(trainPath.replace('\\', '/') + '/{0}/{1}'.format(bird, birdsTestFile[bird][-1]))
                 if BW:
                     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
                     img = img / 255
-                    birdsTest[bird].append(img)
+                    birdsTest[bird][count].append(img)
                 else:
                     img = img / 255
-                    birdsTest[bird].append(img)
+                    birdsTest[bird][count].append(img)
+            count += 1
 
     return birdsEncoded, birdsTrain, birdsTest, birdsTrainFile, birdsTestFile
 

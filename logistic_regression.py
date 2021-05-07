@@ -28,7 +28,7 @@ class logistic_regression:
                 results.append(der_cost)
         return (results)
 
-    def classify(self,inp):#while classifying one input at a time,input is a row vector
+    def classify(self, inp):#while classifying one input at a time,input is a row vector
         inp=np.append([1],inp)
         inp=np.reshape(inp,(1,len(inp)))
         inp = (inp - inp.mean()) / np.sqrt(inp.var()) #normalize the vect

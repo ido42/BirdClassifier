@@ -6,8 +6,8 @@ class confusion_mat():
         self.num_classes = num_classes
         self.c_mat = np.zeros((self.num_classes, self.num_classes))
         self.fail=0
-    def update(self, true_class, predicted_class,Failure):
 
+    def update(self, true_class, predicted_class, Failure):
         if Failure==True:
             self.fail+=1
         else:
