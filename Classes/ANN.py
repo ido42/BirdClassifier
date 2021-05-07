@@ -20,9 +20,9 @@ class ANN:
 
 
     def back_prop_m(self, labels):
-        initGrad = labels - self.layers[-1].output_vector
-        initGradW = np.matmul(initGrad, self.layers[-1].input_vector.transpose())
-        self.layers[-1].backward(initGrad, self.l_rate, gradW=initGradW)
+        initGrad = self.layers[-1].output_vector - labels
+        # initGradW = np.matmul(initGrad, self.layers[-1].input_vector.transpose())
+        self.layers[-1].backward(initGrad, self.l_rate)
         for l in range(len(self.layers)-2, -1, -1):  # other layers
             gradRelu = self.layers[l+1].grad * np.heaviside(self.layers[l].output_vector, 0)
             self.layers[l].backward(gradRelu, self.l_rate)
@@ -36,6 +36,7 @@ class ANN:
         for d in range(0, len(self.layers)):
             drop_neurons = np.random.binomial(1, 1 - drop_probability, (len(self.layers[d].output_vector),1))
             self.layers[d].output_vector = self.layers[d].output_vector * drop_neurons
+
 
     @staticmethod
     def preventOF(mat):  # to prevent overflows

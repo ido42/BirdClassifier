@@ -8,27 +8,27 @@ from Classes.confusion_matrix import *
 #birdsEncoded, birdsTrain, birdsTest, birdsTrainFile, birdsTestFile=image_load()
 
 
-pickle_log = open('trained_log_reg.pickle', 'rb')
-log_reg = pickle.load(pickle_log)
-pickle_in = open('pooled_in_56_10birds.pickle', 'rb')
-inp_mat = pickle.load(pickle_in)
-pickle_out = open('pooled_out_56_10birds.pickle', 'rb')
-out_mat = pickle.load(pickle_out)
-learning_rate=0.2
-num_classes=10
-reg_lambda=0.01
-input_size=inp_mat[0:55].shape
-
-conf=confusion_mat(10)
-p=[]
-inp_mat, out_mat = shuffle_matrix(inp_mat, out_mat)
-for i in range(inp_mat.shape[0]):
-    pred,f=log_reg.classify(inp_mat[i])
-    true=out_mat[i]
-    p.append(pred)
-    con,fail=conf.update(true,pred,f)
-print(con)
-print(conf.fail)
+# pickle_log = open('trained_log_reg.pickle', 'rb')
+# log_reg = pickle.load(pickle_log)
+# pickle_in = open('pooled_in_56_10birds.pickle', 'rb')
+# inp_mat = pickle.load(pickle_in)
+# pickle_out = open('pooled_out_56_10birds.pickle', 'rb')
+# out_mat = pickle.load(pickle_out)
+# learning_rate=0.2
+# num_classes=10
+# reg_lambda=0.01
+# input_size=inp_mat[0:55].shape
+#
+# conf=confusion_mat(10)
+# p=[]
+# inp_mat, out_mat = shuffle_matrix(inp_mat, out_mat)
+# for i in range(inp_mat.shape[0]):
+#     pred,f=log_reg.classify(inp_mat[i])
+#     true=out_mat[i]
+#     p.append(pred)
+#     con,fail=conf.update(true,pred,f)
+# print(con)
+# print(conf.fail)
 """
 for e in range(10):
     inp_mat,out_mat=shuffle_matrix(inp_mat, out_mat)
@@ -173,7 +173,7 @@ for epoch in range(5):
         # d3 = time() - t3
         # epoch
     print("\nEpoch:", epoch, "Error:", (ann.loss**2).mean()/np.sum([len(picturesTrain[i][0]) for i in list(labels)]), "\n", time() - t2)
-    ann.loss = np.array([])
+    ann.loss = []
     count = 0
     for bird in rng.permutation(list(labels)):
         for picture in picturesTest[bird][epoch]:

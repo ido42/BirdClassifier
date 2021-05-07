@@ -18,22 +18,22 @@ class Layer:
             self.output_vector = np.true_divide(self.preventOF(np.exp(self.boundOut(self.output_vector))),
                                                 np.sum(self.preventOF(np.exp(self.boundOut(self.output_vector)))))
 
-    def backward(self, grad, l_rate, gradW=None):
+    def backward(self, grad, l_rate):
         self.gradB = self.preventOF(grad)
-        if gradW is None:
-            self.gradW = np.matmul(self.preventOF(grad), self.input_vector.transpose())
-        else:
-            self.gradW = gradW # gradW is only provided to the output layer
+        # if gradW is None:
+        self.gradW = np.matmul(self.preventOF(grad), self.input_vector.transpose())
+        # else:
+        #     self.gradW = gradW # gradW is only provided to the output layer
         self.grad = self.preventOF(np.matmul(self.weight_matrix.transpose(), self.preventOF(grad)))
         # update parameters
-        self.weight_matrix = self.weight_matrix - (l_rate * self.gradW)
-        self.bias = self.bias - (l_rate * self.gradB)
+        self.weight_matrix = self.weight_matrix + (l_rate * self.gradW)
+        self.bias = self.bias + (l_rate * self.gradB)
 
     @staticmethod
     def preventOF(mat):  # to prevent overflows
-        temp = np.where(mat < 1e-70, 0, mat)
+        temp = np.where(mat < 1e-200, 0, mat)
         temp = np.where(0 < mat, temp, mat)
-        return np.where(1e20 < temp, 1e20, temp)
+        return np.where(1e200 < temp, 1e200, temp)
 
     @staticmethod
     def boundOut(mat):
