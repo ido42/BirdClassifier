@@ -1,39 +1,43 @@
 import pickle
 from logistic_regression import *
-from Train import *
+#from Train import *
 from image_load import *
 from Classes.confusion_matrix import *
 #birdsEncoded, birdsTrain, birdsTest, birdsTrainFile, birdsTestFile=image_load()
 
-"""
-pickle_ann = open('trained_log_reg.pickle', 'rb')
-log_reg = pickle.load(pickle_ann)
+
+pickle_log = open('trained_log_reg.pickle', 'rb')
+log_reg = pickle.load(pickle_log)
 pickle_in = open('pooled_in_56_10birds.pickle', 'rb')
 inp_mat = pickle.load(pickle_in)
 pickle_out = open('pooled_out_56_10birds.pickle', 'rb')
 out_mat = pickle.load(pickle_out)
+learning_rate=0.2
+num_classes=10
+reg_lambda=0.01
+input_size=inp_mat[0:55].shape
+
 conf=confusion_mat(10)
 p=[]
-
+inp_mat, out_mat = shuffle_matrix(inp_mat, out_mat)
 for i in range(inp_mat.shape[0]):
     pred,f=log_reg.classify(inp_mat[i])
     true=out_mat[i]
     p.append(pred)
     con,fail=conf.update(true,pred,f)
 print(con)
-print(conf.fail)"""
-
-
+print(conf.fail)
 """
-for e in range(2):
+for e in range(10):
     inp_mat,out_mat=shuffle_matrix(inp_mat, out_mat)
-    s=inp_mat.shape[0]//10
-    for b in range(10):
-        log_reg.gradient_descent(inp_mat[b*s:(b+1)*s], out_mat[b*s:(b+1)*s])
+    s=inp_mat.shape[0]//100
+    for b in range(100):
+        log.gradient_descent(inp_mat[b*s:(b+1)*s], out_mat[b*s:(b+1)*s])
         print("epoch"+str(e)+"batch"+str(b))
 with open('trained_log_reg.pickle', 'wb') as dump_var1:
-    pickle.dump(log_reg, dump_var1)
-
+    pickle.dump(log, dump_var1)
+conf=confusion_mat(10)
+p=[]
 
 dict_keys=list(birdsTest.keys())
 rand_int=random.randint(0,2)
@@ -56,22 +60,9 @@ print(ann.softmax_out)
 print(out_mat[rand_choose])
 
 
-while True:
-    cv2.imshow("m",birdsTrain['BARN OWL'][0])
-    key=cv2.waitKey(1)
-    if key == ord('q'):
-        break
-Trainer = Train(3, 5, 25, 5, 0.1, [5, 5, 5, 2], 1, 'max')
+""""""
 
-for bird in range(len(train_species)):
-    if train_species[bird] == [0, 1]:
-        img = cv2.imread(imgTrainF+"\\"+train_birds[bird])
-    else:
-        img = cv2.imread(imgTrainBO+"\\"+train_birds[bird])
-    Trainer.train_with_one_img(img, train_species[bird] )
-"""
-
-"""num_cl=10
+num_cl=10
 l_r=0.2
 reg_lambda=0.05
 b_size=inp_mat.shape[0]//10
@@ -95,14 +86,13 @@ encoded_result=log_reg.classify(new_input)
 print(encoded_result)
 print(out_mat[rand_int])"""
 
-
-network = ANN(0.0001, (3136,))
+"""
 for epoch in range(15):
-    inp_mat,out_mat = shuffle_matrix(inp_mat,out_mat)
+    inp_mat,out_mat=shuffle_matrix(inp_mat,out_mat)
     network.dropout(0.5)
     for i in range(inp_mat.shape[0]): # feed every image in train
         c = 0
-        while any((abs(out_mat[i]-network.out.transpose())>np.ones((1,np.size(out_mat[i])))*0.02)[0]):
+        while any((abs(out_mat[i]-network.softmax_out.transpose())>np.ones((1,np.size(out_mat[i])))*0.02)[0]):
             network.forward_pass(inp_mat[i])
             network.back_prop_m(out_mat[i])
             c+=1
@@ -118,7 +108,7 @@ network.forward_pass(inp_mat[rand_int])
 print(network.softmax_out)
 print(out_mat[rand_int])
 with open('trained_ann.pickle', 'wb') as dump_var1:
-    pickle.dump(network, dump_var1)
+    pickle.dump(network, dump_var1)"""
 
 
 # tests = 222
