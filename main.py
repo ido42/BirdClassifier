@@ -1,6 +1,8 @@
 import pickle
 from logistic_regression import *
-#from Train import *
+from Train import *
+import sys
+from time import time
 from image_load import *
 from Classes.confusion_matrix import *
 #birdsEncoded, birdsTrain, birdsTest, birdsTrainFile, birdsTestFile=image_load()
@@ -144,3 +146,43 @@ with open('trained_ann.pickle', 'wb') as dump_var1:
 #     # else:
 #         # print('Failed to converge.')
 # print('\n{:3.4}% accuracy.'.format(100*count/tests))
+
+rng = np.random.default_rng()
+labels, picturesTrain, picturesTest, _, _ = image_load()
+subsample = poolingLayer(56)
+ann = ANN(0.01, (3136,32,12,3))
+
+# t1 = time()
+for epoch in range(5):
+    t2 = time()
+    for bird in rng.permutation(list(labels)):
+        t3 = time()
+        count = 0
+        for picture in picturesTrain[bird][epoch]:
+            sys.stdout.write("\r----- "+bird+" {:3.4}% done -----".format(100 * count / len(picturesTrain[bird][epoch])))
+            sys.stdout.flush()
+
+            t4 = time()
+            picSub = subsample.pool(picture).reshape(56*56,1)
+            ann.forward_pass(picSub)
+            # ann.dropout(0.5)
+            ann.back_prop_m(labels[bird].reshape(3,1))
+            d4 = time() - t4
+            count += 1
+            # epoch
+        # d3 = time() - t3
+        # epoch
+    print("\nEpoch:", epoch, "Error:", (ann.loss**2).mean()/np.sum([len(picturesTrain[i][0]) for i in list(labels)]), "\n", time() - t2)
+    ann.loss = np.array([])
+    count = 0
+    for bird in rng.permutation(list(labels)):
+        for picture in picturesTest[bird][epoch]:
+            t8 = time()
+            picSub = subsample.pool(picture).reshape(56 * 56, 1)
+            ann.forward_pass(picSub)
+            if np.where(ann.out == ann.out.max())[0][0] == np.where(labels[bird] == 1)[0][0]:
+                count += 1
+            d8 = time() - t8
+    print("\n",count / np.sum([len(picturesTest[i][0]) for i in list(labels)]) * 100, '%')
+    # epoch
+# d1 = time() - t1

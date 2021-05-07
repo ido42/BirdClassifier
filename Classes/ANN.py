@@ -3,7 +3,7 @@ import numpy as np
 
 class ANN:
     def __init__(self, l_rate, neurons):  # layers_neurons is a list
-        self.loss = np.array([])
+        self.loss = []
         self.num_layer = len(neurons) - 1
         self.l_rate = l_rate
         self.layers = []
@@ -27,7 +27,7 @@ class ANN:
             gradRelu = self.layers[l+1].grad * np.heaviside(self.layers[l].output_vector, 0)
             self.layers[l].backward(gradRelu, self.l_rate)
         # self.loss = np.sum(- labels * np.log(self.out, where=self.out!=0))
-        np.append(self.loss, np.sum(self.preventOF(self.out) - labels))
+        self.loss.append(np.sum(self.preventOF(self.out) - labels))
 
 
     def dropout(self, drop_probability):
