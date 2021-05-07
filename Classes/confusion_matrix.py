@@ -12,6 +12,6 @@ class confusion_mat():
             self.fail+=1
         else:
             t = int(np.where(true_class == np.max(true_class))[0])
-            p = int(np.where(predicted_class == np.max(predicted_class))[0])
+            p = int(np.where(predicted_class == np.max(predicted_class))[1])
             self.c_mat[p, t] += 1
         return self.c_mat,self.fail
