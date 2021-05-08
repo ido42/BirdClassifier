@@ -1,7 +1,10 @@
 from  Classes.Layer import *
 import numpy as np
+import cupy as cp
 
 class ANN:
+
+
     def __init__(self, l_rate, neurons):  # layers_neurons is a list
         self.loss = []
         self.num_layer = len(neurons) - 1
@@ -21,25 +24,25 @@ class ANN:
 
     def back_prop_m(self, labels):
         initGrad = self.layers[-1].output_vector - labels
-        # initGradW = np.matmul(initGrad, self.layers[-1].input_vector.transpose())
+        # initGradW = cp.matmul(initGrad, self.layers[-1].input_vector.transpose())
         self.layers[-1].backward(initGrad, self.l_rate)
         for l in range(len(self.layers)-2, -1, -1):  # other layers
             gradRelu = self.layers[l+1].grad * np.heaviside(self.layers[l].output_vector, 0)
             self.layers[l].backward(gradRelu, self.l_rate)
-        # self.loss = np.sum(- labels * np.log(self.out, where=self.out!=0))
-        self.loss.append(np.sum(self.preventOF(self.out) - labels))
+        # self.loss = cp.sum(- labels * cp.log(self.out, where=self.out!=0))
+        self.loss.append(np.sum((self.preventOF(self.out) - labels)**2))
 
 
     def dropout(self, drop_probability):
-        drop_neurons = np.random.binomial(1, 1 - drop_probability, len(self.layers[0].input_vector))
+        drop_neurons = cp.random.binomial(1, 1 - drop_probability, len(self.layers[0].input_vector))
         self.layers[0].input_vector = self.layers[0].input_vector * drop_neurons
         for d in range(0, len(self.layers)):
-            drop_neurons = np.random.binomial(1, 1 - drop_probability, (len(self.layers[d].output_vector),1))
+            drop_neurons = cp.random.binomial(1, 1 - drop_probability, (len(self.layers[d].output_vector),1))
             self.layers[d].output_vector = self.layers[d].output_vector * drop_neurons
 
 
     @staticmethod
     def preventOF(mat):  # to prevent overflows
-        temp = np.where(mat < 1e-70, 0, mat)
+        temp = np.where(mat < 1e-200, 0, mat)
         temp = np.where(0 < mat, temp, mat)
-        return np.where(1e20 < temp, 1e20, temp)
+        return np.where(1e200 < temp, 1e200, temp)

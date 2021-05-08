@@ -60,9 +60,7 @@ ann.forward_pass(inp_mat[rand_choose].reshape(50176))
 #bird_class_encoded[:, bird_num] = 1
 print(ann.softmax_out)
 print(out_mat[rand_choose])
-
-
-""""""
+"""
 
 num_cl=10
 l_r=0.2
@@ -86,31 +84,31 @@ rand_int=random.randint(0,np.shape(inp_mat)[0])
 new_input=inp_mat[rand_int]
 encoded_result=log_reg.classify(new_input)
 print(encoded_result)
-print(out_mat[rand_int])"""
+print(out_mat[rand_int])
 
-"""
-for epoch in range(15):
-    inp_mat,out_mat=shuffle_matrix(inp_mat,out_mat)
-    network.dropout(0.5)
-    for i in range(inp_mat.shape[0]): # feed every image in train
-        c = 0
-        while any((abs(out_mat[i]-network.softmax_out.transpose())>np.ones((1,np.size(out_mat[i])))*0.02)[0]):
-            network.forward_pass(inp_mat[i])
-            network.back_prop_m(out_mat[i])
-            c+=1
-    print("epoch"+str(epoch))
-print(("trained"))
-print(network.softmax_out)
-rand_int=random.randint(0,out_mat.shape[0]-1)
-network.forward_pass(inp_mat[rand_int])
-print(network.softmax_out)
-print(out_mat[rand_int])
-rand_int=random.randint(0,out_mat.shape[0]-1)
-network.forward_pass(inp_mat[rand_int])
-print(network.softmax_out)
-print(out_mat[rand_int])
-with open('trained_ann.pickle', 'wb') as dump_var1:
-    pickle.dump(network, dump_var1)"""
+
+# for epoch in range(15):
+#     inp_mat,out_mat=shuffle_matrix(inp_mat,out_mat)
+#     network.dropout(0.5)
+#     for i in range(inp_mat.shape[0]): # feed every image in train
+#         c = 0
+#         while any((abs(out_mat[i]-network.softmax_out.transpose())>np.ones((1,np.size(out_mat[i])))*0.02)[0]):
+#             network.forward_pass(inp_mat[i])
+#             network.back_prop_m(out_mat[i])
+#             c+=1
+#     print("epoch"+str(epoch))
+# print(("trained"))
+# print(network.softmax_out)
+# rand_int=random.randint(0,out_mat.shape[0]-1)
+# network.forward_pass(inp_mat[rand_int])
+# print(network.softmax_out)
+# print(out_mat[rand_int])
+# rand_int=random.randint(0,out_mat.shape[0]-1)
+# network.forward_pass(inp_mat[rand_int])
+# print(network.softmax_out)
+# print(out_mat[rand_int])
+# with open('trained_ann.pickle', 'wb') as dump_var1:
+#     pickle.dump(network, dump_var1)
 
 
 # tests = 222
